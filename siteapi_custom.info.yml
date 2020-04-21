@@ -1,0 +1,8 @@
+type: module
+name: Site API Custom
+description: 'Provides API key and JSON output of node.'
+core: '8.x'
+version: VERSION
+package: Custom
+dependencies:
+  - drupal:serialization

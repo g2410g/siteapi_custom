@@ -1,0 +1,50 @@
+<?php
+
+/**
+ * @file
+ * Contains hooks and helper functions.
+ */
+
+use \Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function siteapi_custom_form_system_site_information_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $siteapikey = empty(\Drupal::config('system.site')->get('siteapikey')) ? t('No API Key yet'): \Drupal::config('system.site')->get('siteapikey');
+
+  // Element siteapikey.
+  $form['site_information']['siteapikey'] = [
+    '#type' => 'textfield',
+    '#title' => t('Site API Key'),
+    '#default_value' => $siteapikey,
+  ];
+
+  // Change Submit button text.
+  $form['actions']['submit']['#value'] = t('Update Configuration');
+
+  // Custom submit handler.
+  $form['#submit'][] = 'siteapi_custom_submit';
+}
+
+/**
+ * Custom submit handler for Site information configuration form.
+ */
+function siteapi_custom_submit(&$form, FormStateInterface $form_state) {
+
+  // Save the value to configurations.
+  Drupal::configFactory()->getEditable('system.site')->set('siteapikey', $form_state->getValues()['siteapikey'])->save();
+
+  // Show Message post form submitting the form.
+  if (!empty($form_state->getValues()['siteapikey'])) {
+    \Drupal::messenger()->addMessage(t('Site API Key has been saved with value : @value',
+      [
+        '@value' => $form_state->getValues()['siteapikey']
+      ]
+    ));
+  }
+  else {
+    // If the value for API key has been removed show the below message.
+    \Drupal::messenger()->addMessage(t('No API Key yet.'));
+  }
+}

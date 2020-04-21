@@ -1,0 +1,7 @@
+siteapi_custom.page_json:
+  path: '/page_json/{site_api_key}/{nid}'
+  defaults:
+    _controller: '\Drupal\siteapi_custom\Controller\JsonNodeController::jsonnode'
+    _title: 'Json representation for node'
+  requirements:
+      _custom_access: '\Drupal\siteapi_custom\Controller\JsonNodeController::jsonnodeaccess'
